@@ -6,10 +6,6 @@
 
 **Name:** Sneha Sarkar
 
-**Roll Number:** 23f2004880
-
-**Student Mail:** 23f2004880@ds.study.iitm.ac.in
-
 **About Me:** I have always been passionate about coding since the time I was introduced to this programming world. I started my coding journey at the age of 13 with HTML. Later, at the age of 14 I was introduced to the programming language Java and hence tried to master myself in this language for 5 years. And therefore, I have a strong grip of Data Structures and Algorithms in this language.
 
 
