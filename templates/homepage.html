@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Page</title>
+    <link rel="stylesheet" href="/static/css/homepage.css">
+    
+</head>
+
+<body>
+    <div class="box">
+        <div class="mid">
+            <div class="heading">WELCOME TO MY APP</div>
+
+            <form action="/" method="POST">
+                <div class="loggingin">
+
+                    <div class="author">
+                        <div class="right">
+                            <label for="author">Author: </label>
+                        </div>
+                        <div class="left">
+                            <select name="AUTHOR" id="author">
+                                <option value="">Select Author Type</option>
+                                <option value="Admin">Admin</option>
+                                <option value="Sponsor">Sponsor</option>
+                                <option value="Influencer">Influencer</option>
+                            </select>
+                        </div>
+                    </div>
+    
+                    <div class="username">
+                        <div class="right">
+                            <label for="username">Username: </label> 
+                        </div> 
+                        <div class="left">
+                            <input type="text" id="username" name="USERNAME" placeholder="Enter your username here">
+                        </div> 
+                    </div>
+    
+                    <div class="password">
+                        <div class="right">
+                            <label for="password">Password: </label> 
+                        </div> 
+                        <div class="left">
+                            <input type="password" id="password" name="PASSWORD" placeholder="Enter your password here">
+                        </div> 
+                    </div>
+
+                    <div class="but">
+                        <button class="submit">Log in</button>
+                    </div>
+
+                    {% if invalid %}
+                    
+                    <div class="invalid">
+                        {{ invalid }}
+                    </div>
+
+                    {% endif %}
+
+                </div>
+            </form>
+
+            <div class="alt">
+                Do not have an account?
+                <div class="reg">
+                    <button class="register"><a href="/inf-register" class="register">Influencer Register</a></button>
+                    <button class="register"><a href="/spon-register" class="register">Sponsor Register</a></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+<!-- code ends -->

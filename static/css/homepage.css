@@ -1,0 +1,127 @@
+body
+{
+    background-image: url('/static/images/index-bg.png');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.box
+{
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    flex-wrap: wrap;
+}
+
+.mid
+{
+    display: flex;
+    flex-direction: column;
+    margin-top: 25px;
+    justify-content: center;
+    align-items: center;
+}
+
+.alt
+{
+    text-align: center;
+    flex-basis: 100px;
+    margin-top: 50px;
+}
+
+a
+{
+    text-decoration: none;
+    color: rgb(38, 8, 1);
+    font-size: 15px;
+}
+
+.heading
+{
+    flex-basis: 100px;
+    text-align: center;
+    font-size: 50px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.loggingin
+{
+    display: flex;
+    flex-direction: column;
+    padding: 60px;
+    width: 600px;
+    align-items: center;
+    border: 4px double rgb(50, 3, 3);
+    background-color: #ffffff8c;
+    gap: 15px;
+}
+
+.author, .username, .password
+{
+    display: flex;
+    padding: 5px;
+    flex-wrap: wrap;
+}
+
+.right
+{
+    padding: 5px;
+    width: 250px;
+    text-align: right;
+    font-size: 30px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.left
+{
+    padding: 5px;
+    width: 250px;
+    font-size: 25px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.but 
+{
+    margin-top: 30px;
+}
+
+.submit
+{
+    border: none;
+    border-radius: 1.5mm;
+    height: 1cm;
+    font-size: 20px;
+    background-color: #bc6d6d;
+    font-weight: bold;
+}
+
+.register
+{
+    border: none;
+    border-radius: 2px;
+    background-color: #210202c8;
+    color: rgb(220, 247, 247);
+    height: 0.75cm;
+    margin-top: 15px;
+}
+
+.invalid
+{
+    font-size: small;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: rgba(248, 146, 159, 0.632);
+    color: rgb(100, 0, 0);
+    border: 2px solid rgb(66, 3, 3);
+}
+
+.reg 
+{
+    display: flex;
+    gap: 20px;
+}
+
+

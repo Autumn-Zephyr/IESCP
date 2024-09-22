@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/static/css/user.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+            <div class="container-fluid d-flex justify-content-between align-items-center">
+                <div style="margin-left: 20px;">
+                    <label class="fs-2 fst-italic">Hello {{sponsor.user_name}}</label>
+                </div>
+                <div>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="/find/sponsor/{{sponsor.sponsor_id}}">Find</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="/stats/sponsor/{{sponsor.sponsor_id}}">Stats</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="/campaigns/sponsor/{{sponsor.sponsor_id}}">Campaigns</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/">Log out</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div class="body d-flex" style="height: 100vh; margin-bottom: 100px;">
+
+        <div class="profile p-2 details" style="height: 100%; position: fixed; width: 400px;">
+            <div style="margin-top: 100px; margin-left: 20px; margin-right: 20px; font-size: large;">
+                <div> <h3> {{sponsor.company_name}} </h3> </div>
+                <div> Industry: {{sponsor.industry_type}} </div>
+                <div style="margin: 40px; text-align: center;">
+                    <a href="#" type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#EditInfoModal" data-val="{{sponsor.company_name}}#{{sponsor.industry_type}}" style="background-color: #7565fe91;">Edit Profile</a>
+                    <a href="#" type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#DeleteInfoModal" style="background-color: #7565fe91;">Delete Account</a>
+                </div>
+
+                {% if sponsor.flagged == 1 %}
+                <span style="background-color: #5e02027d; color: #5e0202; border: 1px solid black;"> You are flagged by the admin. </span>
+                {% endif %}
+
+            </div>
+        </div>
+
+        <div class="rest p-2 flex-grow-1" style="margin-left: 400px;">
+            <div class="info" style="margin: 60px;">
+                <div class="greet" style="margin-top: 100px;">
+                    <h5 style="font-family:Georgia, 'Times New Roman', Times, serif">
+                    Welcome to your dashboard.
+                    </h5>
+                </div>
+        
+                <div style="margin: 50px;">
+                    <h6 style="margin-bottom: 20px;">
+                        Active Advertisements:
+                    </h6>
+
+                    {% set ch = namespace(check = 0) %}
+
+                    {% for advertisement in advertisements %}
+
+                    {% for campaign in campaigns %}
+                    
+                    {% for influencer in influencers %}
+
+                    <ul class="list-group">
+                      
+                        {% if campaign.status == "Active" and campaign.campaign_id == advertisement.campaign_id and advertisement.acceptance == "Accepted" and influencer.influencer_id == advertisement.influencer_id %}
+
+                        {% set ch.check = 1 %}
+
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{campaign.campaign_name}} | {{influencer.first_name}} {{influencer.last_name}}
+                            <div>
+                                <a type="button" class="btn btn-outline-dark" href="#"  data-bs-toggle="modal" data-bs-target="#ViewModal" data-val="{{campaign.campaign_name}}#{{campaign.campaign_description}}#{{advertisement.requirements}}#{{campaign.start_date}}#{{campaign.end_date}}#{{advertisement.amount}}#{{advertisement.work_confirmation}}#{{advertisement.payment_confirmation}}" style="background-color: #9bccef98;">View</a>
+
+                                {% if advertisement.work_confirmation == 1 %}
+                                <a type="button" class="btn btn-outline-dark" href="#" data-bs-toggle="modal" data-bs-target="#PaymentModal" data-val="{{advertisement.advertisement_id}}#{{advertisement.amount}}" style="background-color: #9bccef98;">Pay & Mark as Complete</a>
+                                {% endif %}
+
+                            </div>
+                        </li>
+
+                        {% endif %}
+  
+                    </ul>
+
+                    {% endfor %}
+
+                    {% endfor %}
+
+                    {% endfor %}
+
+                    {% if ch.check == 0 %}
+
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            No active advertisements to show.
+                        </li>
+                    </ul>
+
+                    {% endif %}
+
+
+                </div>
+        
+                <div style="margin: 50px;">
+                    <h6 style="margin-bottom: 20px;">
+                        New Requests:
+                    </h6>
+                    
+                    {% set ch.check = 0 %}
+                    
+                    {% for advertisement in advertisements %}
+
+                    {% for campaign in campaigns %}
+
+                    {% for influencer in influencers %}
+
+                    <ul class="list-group">
+                      
+                        {% if advertisement.sourse == "Influencer" and advertisement.acceptance == "Pending" and campaign.campaign_id == advertisement.campaign_id and campaign.sponsor_id == sponsor.sponsor_id and advertisement.influencer_id == influencer.influencer_id and campaign.flagged == 0 %}
+
+                        {% set ch.check = 1 %}
+
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{campaign.campaign_name}} | {{influencer.first_name}} {{influencer.last_name}}
+                            <div>
+                                <a type="button" class="btn btn-outline-dark" href=","  data-bs-toggle="modal" data-bs-target="#ViewModal" data-val="{{campaign.campaign_name}}#{{campaign.campaign_description}}#{{advertisement.requirements}}#{{campaign.start_date}}#{{campaign.end_date}}#{{advertisement.amount}}#Not Applicable#Not Applicable" style="background-color: #9bccef98;">View</a>
+                                <a type="button" class="btn btn-outline-dark" href="/accept_ad/sponsor/{{advertisement.advertisement_id}}" style="background-color: #9bccef98;">Accept</a>
+                                <a type="submit" href="#" data-bs-toggle="modal" data-bs-target="#NegotiateModal" data-val="{{advertisement.advertisement_id}}#{{advertisement.amount}}#{{advertisement.requirements}}" class="btn btn-outline-dark" style="background-color: #9bccef98;">Negotiate</a>
+                                <a type="button" class="btn btn-outline-dark" href="/reject_ad/advertisement/{{advertisement.advertisement_id}}" style="background-color: #9bccef98;">Reject</a>
+                            </div>
+                        </li>
+
+                        {% endif %}
+  
+                    </ul>
+
+                    {% endfor %}
+
+                    {% endfor %}
+
+                    {% endfor %}
+
+                    {% if ch.check == 0 %}
+
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            No new requests to show.
+                        </li>
+                    </ul>
+
+                    {% endif %}
+
+                </div>
+
+                <div style="margin: 50px;">
+                    <h6 style="margin-bottom: 20px;">
+                        Pending Sent Requests:
+                    </h6>
+
+                    {% set ch.check = 0 %}
+
+                    {% for advertisement in advertisements %}
+
+                    {% for campaign in campaigns %}
+                    
+                    {% for influencer in influencers %}
+
+                    <ul class="list-group">
+                      
+                        {% if advertisement.sourse == "Sponsor" and campaign.campaign_id == advertisement.campaign_id and campaign.sponsor_id == sponsor.sponsor_id and advertisement.acceptance == "Pending" and influencer.influencer_id == advertisement.influencer_id %}
+
+                        {% set ch.check = 1 %}
+
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{campaign.campaign_name}} | {{influencer.first_name}} {{influencer.last_name}}
+                            <div>
+                                <a type="button" class="btn btn-outline-dark" href="#" data-bs-toggle="modal" data-bs-target="#ViewModal" data-val="{{campaign.campaign_name}}#{{campaign.campaign_description}}#{{advertisement.requirements}}#{{campaign.start_date}}#{{campaign.end_date}}#{{advertisement.amount}}#{{advertisement.work_confirmation}}#{{advertisement.payment_confirmation}}" style="background-color: #9bccef98;">View</a>
+
+                                {% if campaign.flagged == 0 and sponsor.flagged == 0 %}
+                                <a type="button" class="btn btn-outline-dark" href="#"  data-bs-toggle="modal" data-bs-target="#EditAdsModal" data-val="{{advertisement.advertisement_id}}#{{campaign.campaign_name}}#{{campaign.campaign_description}}#{{advertisement.requirements}}#{{campaign.start_date}}#{{campaign.end_date}}#{{advertisement.acceptance}}#{{advertisement.amount}}#Not Applicable#Not Applicable" style="background-color: #9bccef98;">Edit</a>
+                                <a type="button" class="btn btn-outline-dark" href="/delete_ad/sponsor/{{advertisement.advertisement_id}}" style="background-color: #9bccef98;">Delete</a>
+
+                                {% else %}
+                                <button type="button" class="btn btn-outline-dark" style="background-color: #9bccef98;">Flagged by Admin</button>
+
+                                {% endif %}
+                            </div>
+                        </li>
+
+                        {% endif %}
+  
+                    </ul>
+
+                    {% endfor %}
+
+                    {% endfor %}
+
+                    {% endfor %}
+
+                    {% if ch.check == 0 %}
+
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            No new requests are sent.
+                        </li>
+                    </ul>
+
+                    {% endif %}
+
+                </div>
+
+                <div style="margin: 50px;">
+                    <h6 style="margin-bottom: 20px;">
+                        All Advertisements:
+                    </h6>
+
+                    {% set ch.check = 0 %}
+
+                    {% for advertisement in advertisements %}
+
+                    {% for campaign in campaigns %}
+                    
+                    {% for influencer in influencers %}
+
+                    <ul class="list-group">
+                      
+                        {% if advertisement.campaign_id == campaign.campaign_id and advertisement.sourse == "Sponsor" and influencer.influencer_id == advertisement.influencer_id %}
+
+                        {% set ch.check = 1 %}
+
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{campaign.campaign_name}} | {{influencer.first_name}} {{influencer.last_name}}
+                            <div>
+                                <a type="button" class="btn btn-outline-dark" href="#"  data-bs-toggle="modal" data-bs-target="#ViewAdsModal" data-val="{{campaign.campaign_name}}#{{campaign.campaign_description}}#{{influencer.first_name}} {{influencer.last_name}}#{{advertisement.requirements}}#{{campaign.start_date}}#{{campaign.end_date}}#{{advertisement.acceptance}}#{{advertisement.amount}}#{{advertisement.work_confirmation}}#{{advertisement.payment_confirmation}}" style="background-color: #9bccef98;">View</a>
+                            </div>
+                        </li>
+
+                        {% endif %}
+  
+                    </ul>
+
+                    {% endfor %}
+
+                    {% endfor %}
+
+                    {% endfor %}
+
+                    {% if ch.check == 0 %}
+
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            No completed advertisements to show.
+                        </li>
+                    </ul>
+
+                    {% endif %}
+
+                </div>
+            
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Modal dialog boxes for editing profile -->
+
+    <form method="POST" action="/edit_profile/sponsor/{{sponsor.sponsor_id}}">
+        <div class="modal fade" id="EditInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Negotiate</h5>
+                    </div>
+
+                    <div class="modal-body">
+                        <label class="form-label" for="name">Company Name </label>
+                        <input class="form-control" type="text" name="name" id="name" />
+                        <label class="form-label" for="industry">Industry: </label>
+                        <select class="form-control" type="text" name="industry" id="industry" >
+                            <option value="Electronics">Electronics</option>
+                            <option value="Food-Breverages">Food/Breverages</option>
+                            <option value="Utilities">Utilities</option>
+                            <option value="Stationaries">Stationaries</option>
+                            <option value="Groceries">Groseries</option>
+                            <option value="Fashion">Fashion</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Education">Education</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        $("#EditInfoModal").on("show.bs.modal", function(event){
+            var st = $(event.relatedTarget).data('val');
+            var values = st.split('#');
+            $(this).find('#name').val(values[0]);
+            $(this).find('#industry').val(values[1]);
+        });
+    </script>
+
+
+    <!-- Modal dialog boxes for deleting profile -->
+
+    <form method="POST" action="/delete/sponsor/{{sponsor.sponsor_id}}">
+        <div class="modal fade" id="DeleteInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Delete Profile</h5>
+                    </div>
+
+                    <div class="modal-body">
+                        <label class="form-label">Are you sure you want to delete your account?</label>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-outline-dark">Yes</button>
+                        <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+    <!-- Modal dialog boxes for viewing advertisements -->
+
+    <div class="modal fade" id="ViewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">View Advertisement</h5>
+                </div>
+
+                <div class="modal-body">
+
+                    <label class="form-label" for="name">Campaign Name: </label>
+                    <input class="form-control" type="text" name="name" id="name" readonly />
+                    <label class="form-label" for="description">Campaign Description: </label>
+                    <textarea class="form-control" type="text" name="description" id="description" readonly ></textarea>
+                    <label class="form-label" for="requirements">Requirements: </label>
+                    <textarea class="form-control" type="text" name="requirements" id="requirements" readonly></textarea>
+                    <label class="form-label" for="start">Start Date: </label>
+                    <input class="form-control" type="text" name="start" id="start" readonly />
+                    <label class="form-label" for="end">End Date: </label>
+                    <input class="form-control" type="text" name="end" id="end" readonly />
+                    <label class="form-label" for="amount">Amount: </label>
+                    <input class="form-control" type="text" name="amount" id="amount" readonly />
+                    <label class="form-label" for="work">Work Completed: </label>
+                    <input class="form-control" type="text" name="work" id="work" readonly />
+                    <label class="form-label" for="payment">Payment Completed: </label>
+                    <input class="form-control" type="text" name="payment" id="payment" readonly />
+                
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $("#ViewModal").on("show.bs.modal", function(event){
+            var st = $(event.relatedTarget).data('val');
+            var values = st.split('#');
+            $(this).find('#name').val(values[0]);
+            $(this).find('#description').val(values[1]);
+            $(this).find('#requirements').val(values[2]);
+            $(this).find('#start').val(values[3]);
+            $(this).find('#end').val(values[4]);
+            $(this).find('#amount').val(values[5]);
+            $(this).find('#work').val(values[6]);
+            $(this).find('#payment').val(values[7]);
+        });
+    </script>
+
+
+    <!-- Modal dialog boxes for negotiating amount -->
+
+    <form method="POST" action="/negotiate_ad/sponsor/{{sponsor.sponsor_id}}">
+        <div class="modal fade" id="NegotiateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Negotiate</h5>
+                    </div>
+
+                    <div class="modal-body">
+                        <label class="form-label" for="ad_id">Ad_ID: </label>
+                        <input class="form-control" type="text" name="ad_id" id="ad_id" readonly />
+                        <label class="form-label" for="amount">Amount: </label>
+                        <input class="form-control" type="text" name="amount" id="amount" />
+                        <label class="form-label" for="requirements">Requirements: </label>
+                        <textarea class="form-control" type="text" name="requirements" id="requirements"></textarea>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Send</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        $("#NegotiateModal").on("show.bs.modal", function(event){
+            var st = $(event.relatedTarget).data('val');
+            var values = st.split('#');
+            $(this).find('#ad_id').val(values[0]);
+            $(this).find('#amount').val(values[1]);
+            $(this).find('#requirements').val(values[2]);
+        });
+    </script>
+
+
+    <!-- Modal dialog boxes for viewing ads -->
+
+    <div class="modal fade" id="ViewAdsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">View Advertisement</h5>
+                </div>
+
+                <div class="modal-body">
+
+                    <label class="form-label" for="name">Campaign Name: </label>
+                    <input class="form-control" type="text" name="name" id="name" readonly />
+                    <label class="form-label" for="description">Campaign Description: </label>
+                    <textarea class="form-control" type="text" name="description" id="description" readonly ></textarea>
+                    <label class="form-label" for="inf_name">Influencer Name: </label>
+                    <input class="form-control" type="text" name="inf_name" id="inf_name" readonly />
+                    <label class="form-label" for="requirements">Requirements: </label>
+                    <textarea class="form-control" type="text" name="requirements" id="requirements" readonly></textarea>
+                    <label class="form-label" for="start">Start Date: </label>
+                    <input class="form-control" type="text" name="start" id="start" readonly />
+                    <label class="form-label" for="end">End Date: </label>
+                    <input class="form-control" type="text" name="end" id="end" readonly />
+                    <label class="form-label" for="accept">Acceptance status: </label>
+                    <input class="form-control" type="text" name="accept" id="accept" readonly />
+                    <label class="form-label" for="amount">Amount: </label>
+                    <input class="form-control" type="text" name="amount" id="amount" readonly />
+                    <label class="form-label" for="work">Work Completed: </label>
+                    <input class="form-control" type="text" name="work" id="work" readonly />
+                    <label class="form-label" for="payment">Payment Done: </label>
+                    <input class="form-control" type="text" name="payment" id="payment" readonly />
+                
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $("#ViewAdsModal").on("show.bs.modal", function(event){
+            var st = $(event.relatedTarget).data('val');
+            var values = st.split('#');
+            $(this).find('#name').val(values[0]);
+            $(this).find('#description').val(values[1]);
+            $(this).find('#inf_name').val(values[2]);
+            $(this).find('#requirements').val(values[3]);
+            $(this).find('#start').val(values[4]);
+            $(this).find('#end').val(values[5]);
+            $(this).find('#accept').val(values[6]);
+            $(this).find('#amount').val(values[7]);
+            $(this).find('#work').val(values[8]);
+            $(this).find('#payment').val(values[9]);
+        });
+    </script>
+
+
+<!-- Modal dialog boxes for editing ads -->
+
+    <form method="POST" action="/edit_ad/sponsor/{{sponsor.sponsor_id}}">
+        <div class="modal fade" id="EditAdsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">View Campaign</h5>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <label class="form-label" for="ad_id">Ad ID: </label>
+                        <input class="form-control" type="text" name="ad_id" id="ad_id" disabled />
+                        <label class="form-label" for="name">Campaign Name: </label>
+                        <input class="form-control" type="text" name="name" id="name" disabled />
+                        <label class="form-label" for="description">Campaign Description: </label>
+                        <textarea class="form-control" type="text" name="description" id="description" disabled ></textarea>
+                        <label class="form-label" for="requirements">Requirements: </label>
+                        <textarea class="form-control" type="text" name="requirements" id="requirements"></textarea>
+                        <label class="form-label" for="start">Start Date: </label>
+                        <input class="form-control" type="text" name="start" id="start" disabled />
+                        <label class="form-label" for="end">End Date: </label>
+                        <input class="form-control" type="text" name="end" id="end" disabled />
+                        <label class="form-label" for="accept">Acceptance Status: </label>
+                        <input class="form-control" type="text" name="accept" id="accept" disabled />
+                        <label class="form-label" for="amount">Amount: </label>
+                        <input class="form-control" type="text" name="amount" id="amount" />
+                        <label class="form-label" for="work">Work Completed: </label>
+                        <input class="form-control" type="text" name="work" id="work" disabled />
+                        <label class="form-label" for="payment">Payment Done: </label>
+                        <input class="form-control" type="text" name="payment" id="payment" disabled />
+                    
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        $("#EditAdsModal").on("show.bs.modal", function(event){
+            var st = $(event.relatedTarget).data('val');
+            var values = st.split('#');
+            $(this).find('#ad_id').val(values[0]);
+            $(this).find('#name').val(values[1]);
+            $(this).find('#description').val(values[2]);
+            $(this).find('#requirements').val(values[3]);
+            $(this).find('#start').val(values[4]);
+            $(this).find('#end').val(values[5]);
+            $(this).find('#accept').val(values[6]);
+            $(this).find('#amount').val(values[7]);
+            $(this).find('#work').val(values[8]);
+            $(this).find('#payment').val(values[9]);
+        });
+    </script>
+
+
+    <!-- Modal dialog boxes for paying amount -->
+
+    <form method="POST" action="/payment_ad/sponsor/{{sponsor.sponsor_id}}">
+        <div class="modal fade" id="PaymentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Payment</h5>
+                    </div>
+
+                    <div class="modal-body">
+                        <label class="form-label" for="ad_id">Ad_ID: </label>
+                        <input class="form-control" type="text" name="ad_id" id="ad_id" readonly/>
+                        <label class="form-label" for="amount">Amount: </label>
+                        <input class="form-control" type="text" name="amount" id="amount" readonly />
+                        <label class="form-label" for="rating">Rating: </label>
+                        <select class="form-control" type="text" name="rating" id="rating" required>
+                            <option value="">Select from here</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Send</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        $("#PaymentModal").on("show.bs.modal", function(event){
+            var st = $(event.relatedTarget).data('val');
+            var values = st.split('#');
+            $(this).find('#ad_id').val(values[0]);
+            $(this).find('#amount').val(values[1]);
+        });
+    </script>
+
+
+</body>
+</html>
+
+
+<!-- code ends -->

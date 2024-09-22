@@ -1,0 +1,107 @@
+body
+{
+    background-image: url(/static/images/register-bg.png);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.box
+{
+    display: flex;
+    flex-direction: column;
+    padding: 35px;
+    align-items: center;
+}
+
+.main
+{
+    display: flex;
+    flex-direction: column;
+    padding: 50px;
+    border: 4px dotted black;
+    background-color: #ffffff8b;
+}
+
+.alternate
+{
+    text-align: end;
+    flex-basis: 50px;
+    color: #3f0c0f;
+    align-self: flex-end;
+}
+
+a
+{
+    text-decoration: none;
+    color: #1d0238d0;
+}
+
+.head
+{
+    flex-basis: 100px;
+    text-align: center;
+    font-size: 50px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.form
+{
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    align-items: center;
+}
+
+.username, .firstname, .lastname, .name, .password, .conf-password, .industry, .platforms, .niche, .reach
+{
+    display: flex;
+    padding: 5px;
+    flex-wrap: wrap;
+
+}
+
+.right
+{
+    padding: 5px;
+    width: 250px;
+    text-align: right;
+    font-size: 20px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.left
+{
+    padding: 5px;
+    width: 250px;
+    font-size: 18px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.but 
+{
+    margin-top: 30px;
+}
+
+.invalid
+{
+    margin-top: 15px;
+    font-size: small;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: rgba(248, 146, 159, 0.632);
+    color: rgb(100, 0, 0);
+    border: 2px solid rgb(66, 3, 3);
+}
+
+.submit
+{
+    border: none;
+    border-radius: 1.5mm;
+    height: 1cm;
+    font-size: 20px;
+    background-color: #bc6d6d;
+    font-weight: bold;
+}

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find</title>
+    <link rel="stylesheet" href="/static/css/admin.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body style="background-color: #86efc7;">
+    <div class="dashboard">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+            <div class="container-fluid d-flex justify-content-between align-items-center">
+                <div style="margin-left: 20px;">
+                  <label class="fs-2 fst-italic">Hello {{username}}</label>
+                </div>
+                <div>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="/dashboard/admin/{{username}}">Info</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="/stats/admin/{{username}}">Stats</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/">Log out</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div class="info" style="margin: 60px; margin-top: 100px;">
+
+        <div class="container-fluid d-flex justify-content-end">
+            <form class="d-flex" action="/search/admin/{{username}}">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="word">
+                <button type="submit" class="btn btn-light">Search</button>
+            </form>
+        </div>
+
+        <div style="margin: 50px;">
+            <h6 style="margin-bottom: 20px;">
+                Campaigns:
+            </h6>
+
+            {% set ch = namespace(check = 0) %}
+
+            {% for campaign in campaigns %}
+            
+            {% for spon in spons %}
+
+            <ul class="list-group">
+
+                {% if campaign.sponsor_id == spon.sponsor_id %}
+
+                {% set ch.check = 1 %}
+
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{campaign.campaign_name}} | {{spon.company_name}} | Progress...{{(campaign.ads_completed / campaign.no_of_ads * 100) | round(2)}}%
+
+                    <div>
+                        <a type="button" class="btn btn-outline-dark" href="#" data-bs-toggle="modal" data-bs-target="#ViewModal" data-val="{{campaign.campaign_name}}#{{campaign.campaign_description}}#{{campaign.campaign_type}}#{{campaign.start_date}}#{{campaign.end_date}}" style="background-color: #9bccef98;">View</a>
+
+                        {% if campaign.flagged == 0 %}
+                        <a type="submit" href ="/flag/admin/{{username}}/{{campaign.campaign_id}}" class="btn btn-outline-dark" style="background-color: #14a990a0;">Flag</a>
+                        {% endif %}
+
+                    </div>
+                </li>
+
+                {% endif %}
+
+            </ul>
+
+            {% endfor %}
+            
+            {% endfor %}
+
+            {% if ch.check == 0 %}
+
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    No campaigns to show.
+                </li>
+            </ul>
+
+            {% endif %}
+
+       </div>
+
+        <div style="margin: 50px;">
+            <h6 style="margin-bottom: 20px;">
+            Sponsors:
+            </h6>
+
+            {% set ch.check = 0 %}
+
+            {% for sponsor in sponsors %}
+
+            <ul class="list-group">
+
+                {% set ch.check = 1 %}
+
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{sponsor.company_name}}
+                    <div>
+                        <a type="button" class="btn btn-outline-dark" href="#" data-bs-toggle="modal" data-bs-target="#ViewSponModal" data-val="{{sponsor.company_name}}#{{sponsor.industry_type}}" style="background-color: #9bccef98;">View</a>
+
+                        {% if sponsor.flagged == 0 %}
+                        <a type="submit" href="/flag/admin/{{username}}/{{sponsor.user_name}}" class="btn btn-outline-dark" style="background-color: #14a990a0;">Flag</a>
+                        {% endif %}
+
+                    </div>
+                </li>
+
+            </ul>
+
+            {% endfor %}
+
+            {% if ch.check == 0 %}
+
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    No sponsors to show.
+                </li>
+            </ul>
+
+            {% endif %}
+            
+        </div>
+
+        <div style="margin: 50px;">
+            <h6 style="margin-bottom: 20px;">
+            Influencers:
+            </h6>
+
+            {% set ch.check = 0 %}
+
+            {% for influencer in influencers %}
+
+            <ul class="list-group">
+
+                {% set ch.check = 1 %}
+
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{influencer.first_name}} {{influencer.last_name}}
+                    <div>
+                        <a type="button" class="btn btn-outline-dark" href="#" data-bs-toggle="modal" data-bs-target="#ViewInfModal" data-val="{{influencer.first_name}} {{influencer.last_name}}#{{influencer.niche}}#{{influencer.platforms}}#{{influencer.reach}}" style="background-color: #9bccef98;">View</a>
+
+                        {% if influencer.flagged == 0 %}
+                        <a type="submit" href="/flag/admin/{{username}}/{{influencer.user_name}}" class="btn btn-outline-dark" style="background-color: #14a990a0;">Flag</a>
+                        {% endif %}
+
+                    </div>
+                </li>
+
+            </ul>
+
+            {% endfor %}
+
+            {% if ch.check == 0 %}
+
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    No influencers to show.
+                </li>
+            </ul>
+
+            {% endif %}
+          
+        </div>
+
+    </div>
+
+        <!-- Modal dialog boxes for viewing campaigns -->
+
+        <div class="modal fade" id="ViewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">View Campaign</h5>
+                    </div>
+    
+                    <div class="modal-body">
+    
+                        <label class="form-label" for="name">Campaign Name: </label>
+                        <input class="form-control" type="text" name="name" id="name" readonly />
+                        <label class="form-label" for="description">Campaign Description: </label>
+                        <textarea class="form-control" type="text" name="description" id="description" readonly ></textarea>
+                        <label class="form-label" for="campaign_type">Campaign Niche: </label>
+                        <input class="form-control" type="text" name="campaign_type" id="campaign_type" readonly />
+                        <label class="form-label" for="start">Start Date: </label>
+                        <input class="form-control" type="text" name="start" id="start" readonly />
+                        <label class="form-label" for="end">End Date: </label>
+                        <input class="form-control" type="text" name="end" id="end" readonly />
+                    
+                    </div>
+    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <script>
+            $("#ViewModal").on("show.bs.modal", function(event){
+                var st = $(event.relatedTarget).data('val');
+                var values = st.split('#');
+                $(this).find('#name').val(values[0]);
+                $(this).find('#description').val(values[1]);
+                $(this).find('#campaign_type').val(values[2]);
+                $(this).find('#start').val(values[3]);
+                $(this).find('#end').val(values[4]);
+            });
+        </script>
+    
+        <!-- Modal dialog boxes for viewing sponsors -->
+    
+        <div class="modal fade" id="ViewSponModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">View Campaign</h5>
+                    </div>
+    
+                    <div class="modal-body">
+    
+                        <label class="form-label" for="name">Name: </label>
+                        <input class="form-control" type="text" name="name" id="name" readonly />
+                        <label class="form-label" for="category">Industry: </label>
+                        <input class="form-control" type="text" name="category" id="category" readonly />
+                    
+                    </div>
+    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <script>
+            $("#ViewSponModal").on("show.bs.modal", function(event){
+                var st = $(event.relatedTarget).data('val');
+                var values = st.split('#');
+                $(this).find('#name').val(values[0]);
+                $(this).find('#category').val(values[1]);
+            });
+        </script>
+    
+        <!-- Modal dialog boxes for viewing influencers -->
+    
+        <div class="modal fade" id="ViewInfModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">View Campaign</h5>
+                    </div>
+    
+                    <div class="modal-body">
+    
+                        <label class="form-label" for="name">Name: </label>
+                        <input class="form-control" type="text" name="name" id="name" readonly />
+                        <label class="form-label" for="category">Niche: </label>
+                        <input class="form-control" type="text" name="category" id="category" readonly />
+                        <label class="form-label" for="platforms">Platforms: </label>
+                        <input class="form-control" type="text" name="platforms" id="platforms" readonly />
+                        <label class="form-label" for="reach">Reach: </label>
+                        <input class="form-control" type="text" name="reach" id="reach" readonly />
+                    
+                    </div>
+    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <script>
+            $("#ViewInfModal").on("show.bs.modal", function(event){
+                var st = $(event.relatedTarget).data('val');
+                var values = st.split('#');
+                $(this).find('#name').val(values[0]);
+                $(this).find('#category').val(values[1]);
+                $(this).find('#platforms').val(values[2]);
+                $(this).find('#reach').val(values[3]);
+            });
+        </script>
+
+</body>
+</html>
+
+
+<!-- code ends -->

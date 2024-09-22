@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register as Sponsor</title>
+    <link rel="stylesheet" href="/static/css/register.css">
+
+</head>
+
+<body>
+
+    <div class="box">
+
+        <div class="alternate">
+            Already have an account? <a href="/">Log in</a>
+        </div>
+
+        <div class="alternate">
+            Register as an Influencer? <a href="/inf-register">Register</a>
+        </div>
+
+        <div class="main">
+            <div class="head">Register as a Sponsor</div>
+
+            <form method="POST" action="/spon-register">
+
+                <div class="form">
+
+                    <div class="name">
+                        <div class="right">
+                            <label for="name">Name/Company: </label> 
+                        </div> 
+                        <div class="left">
+                            <input type="text" id="name" name="name" placeholder="Enter your name/company here" required />
+                        </div> 
+                    </div>
+                    
+                    <div class="username">
+                        <div class="right">
+                            <label for="username">Username: </label> 
+                        </div> 
+                        <div class="left">
+                            <input type="text" id="username" name="username" placeholder="Enter your username here" required />
+                        </div> 
+                    </div>
+
+                    <div class="password">
+                        <div class="right">
+                            <label for="password">Password: </label> 
+                        </div> 
+                        <div class="left">
+                            <input type="password" id="password" name="password" placeholder="Enter your password here" required />
+                        </div> 
+                    </div>
+
+                    <div class="conf-password">
+                        <div class="right">
+                            <label for="conf-password">Confirm Password: </label> 
+                        </div> 
+                        <div class="left">
+                            <input type="password" id="conf-password" name="conf-password" placeholder="Re-enter your password here" required />
+                        </div> 
+                    </div>
+
+                    <div class="industry">
+                        <div class="right">
+                            <label for="industry">Industry: </label> 
+                        </div> 
+                        <div class="left">
+                            <select name="INDUSTRY" id="industry" required>
+                                <option value="">Select Industry Type</option>
+                                <option value="Electronics">Electronics</option>
+                                <option value="Food-Breverages">Food/Breverages</option>
+                                <option value="Utilities">Utilities</option>
+                                <option value="Stationaries">Stationaries</option>
+                                <option value="Groceries">Groseries</option>
+                                <option value="Fashion">Fashion</option>
+                                <option value="Technology">Technology</option>
+                                <option value="Education">Education</option>
+                            </select>
+                        </div> 
+                    </div>
+
+                    <div class="but">
+                        <button class="submit">Register</button>
+                    </div>
+
+                    {% if invalid %}
+                    
+                    <div class="invalid">
+                        {{ invalid }}
+                    </div>
+
+                    {% endif %}
+                    
+                </div>
+
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+
+
+<!-- code ends -->

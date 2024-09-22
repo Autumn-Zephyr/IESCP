@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find</title>
+    <link rel="stylesheet" href="/static/css/user.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="find">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+          <div style="margin-left: 20px;">
+            <label class="fs-2 fst-italic">Hello {{sponsor.user_name}}</label>
+          </div>
+          <div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="/dashboard/sponsor/{{sponsor.sponsor_id}}">Profile</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="/stats/sponsor/{{sponsor.sponsor_id}}">Stats</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="/campaigns/sponsor/{{sponsor.sponsor_id}}">Campaigns</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/">Log out</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+
+    <div id="div1" class="info" style="margin: 60px; margin-top: 100px;">
+
+        <span class="container-fluid d-flex justify-content-end">
+            <form class="d-flex" action="/search/sponsor/{{sponsor.sponsor_id}}">
+                <input id="search_id" class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="word">
+                <button type="submit" class="btn btn-light">Search</button>
+            </form>
+        </span>
+
+        <div class="overflow-auto" style="margin: 50px; margin-bottom: 100px;">
+            <h6 style="margin-bottom: 20px;">
+                Campaigns:
+            </h6>
+
+            {% set ch = namespace(check = 0) %}
+
+            {% for campaign in campaigns %}
+
+            {% set ch.check = 1 %}
+
+            <ul class="list-group">
+
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{campaign.campaign_name}} | Progress...{{(campaign.ads_completed / campaign.no_of_ads * 100) | round(2)}}%
+
+                    {% if campaign.flagged == 0 %}
+                    <a type="button" class="btn btn-outline-dark" href="#" data-bs-toggle="modal" data-bs-target="#ViewModal" data-val="{{campaign.campaign_name}}#{{campaign.campaign_description}}#{{campaign.no_of_ads}}#{{campaign.ads_completed}}#{{campaign.start_date}}#{{campaign.end_date}}#{{campaign.budget}}" style="background-color: #9bccef98;">View</a>
+
+                    {% else %}
+                    <button type="button" class="btn btn-outline-dark" style="background-color: #9bccef98;">Flagged by Admin</button>
+
+                    {% endif %}
+                </li>
+            
+            </ul>
+
+            {% endfor %}
+
+            {% if ch.check == 0 %}
+
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    No campaigns to show.
+                </li>
+            </ul>
+
+            {% endif %}
+
+        </div>
+
+        <div style="margin: 50px;">
+            <h6 style="margin-bottom: 20px;">
+            Influencers:
+            </h6>
+            
+            {% set ch.check = 0 %}
+
+            {% for influencer in influencers %}
+
+            {% set ch.check = 1 %}
+
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{influencer.first_name}} {{influencer.last_name}} | {{influencer.niche}} | {{influencer.reach}}
+                    <div>
+                        <a type="button" class="btn btn-outline-dark" href="#" data-bs-toggle="modal" data-bs-target="#ViewInfModal" data-val="{{influencer.first_name}} {{influencer.last_name}}#{{influencer.niche}}#{{influencer.reach}}#{{influencer.platforms}}#{{influencer.rating}}" style="background-color: #9bccef98;">View</a>
+
+                        {% if sponsor.flagged == 0 %}
+                        <a type="button" class="btn btn-outline-dark" href="#" data-bs-toggle="modal" data-bs-target="#RequestInfModal" data-val="{{influencer.influencer_id}}#" style="background-color: #9bccef98;">Request</a>
+                        {% endif %}
+
+                    </div>
+                </li>
+            </ul>
+
+            {% endfor %}
+
+            {% if ch.check == 0 %}
+
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    No influencers to show.
+                </li>
+            </ul>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    
+
+    <!-- Modal dialog boxes for viewing campaigns -->
+
+    <div class="modal fade" id="ViewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">View Campaign</h5>
+                </div>
+
+                <div class="modal-body">
+
+                    <label class="form-label" for="name">Campaign Name: </label>
+                    <input class="form-control" type="text" name="name" id="name" readonly />
+                    <label class="form-label" for="description">Campaign Description: </label>
+                    <textarea class="form-control" type="text" name="description" id="description" readonly ></textarea>
+                    <label class="form-label" for="ads">Ads Target: </label>
+                    <input class="form-control" type="text" name="ads" id="ads" readonly />
+                    <label class="form-label" for="ads_comp">Ads Completed: </label>
+                    <input class="form-control" type="text" name="ads_comp" id="ads_comp" readonly />
+                    <label class="form-label" for="start">Start Date: </label>
+                    <input class="form-control" type="text" name="start" id="start" readonly />
+                    <label class="form-label" for="end">End Date: </label>
+                    <input class="form-control" type="text" name="end" id="end" readonly />
+                    <label class="form-label" for="budget">Budget: </label>
+                    <input class="form-control" type="text" name="budget" id="budget" readonly />
+                
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $("#ViewModal").on("show.bs.modal", function(event){
+            var st = $(event.relatedTarget).data('val');
+            var values = st.split('#');
+            $(this).find('#name').val(values[0]);
+            $(this).find('#description').val(values[1]);
+            $(this).find('#ads').val(values[2]);
+            $(this).find('#ads_comp').val(values[3]);
+            $(this).find('#start').val(values[4]);
+            $(this).find('#end').val(values[5]);
+            $(this).find('#budget').val(values[6]);
+        });
+    </script>
+
+
+    <!-- Modal dialog boxes for viewing influencers -->
+
+    <div class="modal fade" id="ViewInfModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">View Influencer</h5>
+                </div>
+
+                <div class="modal-body">
+
+                    <label class="form-label" for="infname">Influencer Name: </label>
+                    <input class="form-control" type="text" name="infname" id="infname" readonly />
+                    <label class="form-label" for="niche">Niche: </label>
+                    <input class="form-control" type="text" name="niche" id="niche" readonly />
+                    <label class="form-label" for="reach">Reach: </label>
+                    <input class="form-control" type="text" name="reach" id="reach" readonly />
+                    <label class="form-label" for="platforms">Platforms: </label>
+                    <input class="form-control" type="text" name="platforms" id="platforms" readonly />
+                    <label class="form-label" for="rating">Rating: </label>
+                    <input class="form-control" type="text" name="rating" id="rating" readonly />
+                
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $("#ViewInfModal").on("show.bs.modal", function(event){
+            var st = $(event.relatedTarget).data('val');
+            var values = st.split('#');
+            $(this).find('#infname').val(values[0]);
+            $(this).find('#niche').val(values[1]);
+            $(this).find('#reach').val(values[2]);
+            $(this).find('#platforms').val(values[3]);
+            $(this).find('#rating').val(values[4]);
+        });
+    </script>
+
+
+    <!-- Modal dialog boxes for requesting influencers -->
+
+    <form method="POST" action="/request_ad/sponsor/{{sponsor.sponsor_id}}">
+        <div class="modal fade" id="RequestInfModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Request Influencer</h5>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <label class="form-label" for="id">Influencer ID: </label>
+                        <input class="form-control" type="text" name="id" id="id" readonly />
+                        <label class="form-label" for="camp_id">Campaign: </label>
+                        <select class="form-control" type="text" name="camp_id" id="camp_id" required>
+                            <option value="">Select campaign</option>
+                            {% for campaign in campaigns %}
+                            {% if campaign.flagged == False and not(campaign.no_of_ads == campaign.ads_completed) %}
+                            <option value="{{campaign.campaign_id}}">{{campaign.campaign_name}}</option>
+                            {% endif %}
+                            {% endfor %}
+
+                        </select>
+                        <label class="form-label" for="requirements">Requirements: </label>
+                        <textarea class="form-control" type="text" name="requirements" id="requirements" placeholder="Enter ad requirements" required></textarea>
+                        <label class="form-label" for="amount">Amount: </label>
+                        <input class="form-control" type="text" name="amount" id="amount" placeholder="Enter the amount you will pay" required/>
+                    
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Send Request</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        $("#RequestInfModal").on("show.bs.modal", function(event){
+            var st = $(event.relatedTarget).data('val');
+            var values = st.split('#');
+            $(this).find('#id').val(values[0]);
+        });
+    </script>
+
+
+</body>
+</html>
+
+
+<!-- code ends -->
