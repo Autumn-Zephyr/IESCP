@@ -41,8 +41,6 @@ A platform for sponsors and influencers to interact with each other where a spon
 
 > ### **Architecture** 
 
-+ The main **23f2004880** folder lies in the root directory of the zip.
-+ The **Codes** folder and the **MAD_I_Project_Report.pdf** file resides inside the **23f2004880** folder.
 + The **app.py** and **README.md** files, and the **templates**, **static**, **backend** and **instance** folders reside inside the **Codes** folder.
 + The **templates** folder contains all the **.html** files.
 + The **static** folder contains the **css**, **images** and **graphs** folders which further contains all **.css**, **.png** and all required graphs, respectively.
